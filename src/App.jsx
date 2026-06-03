@@ -1,121 +1,231 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useMemo, useState } from 'react'
+import CodeMirror from '@uiw/react-codemirror'
+import { python } from '@codemirror/lang-python'
+import {
+  AlertTriangle,
+  BookOpen,
+  Braces,
+  CheckCircle2,
+  Code2,
+  Play,
+  RotateCcw,
+  Terminal,
+  Trash2,
+} from 'lucide-react'
+import { runCompiler } from './compiler'
 import './App.css'
 
+const DEFAULT_CODE = `nome = "Ana"
+idade = 20
+media = 8.5
+
+print("Aluno:", nome)
+
+if idade >= 18 and media >= 6:
+    print("Situação: aprovado")
+else:
+    print("Situação: revisar")
+
+for tentativa in range(1, 4):
+    print("Tentativa", tentativa)
+
+contador = 0
+while contador < 2:
+    print("while", contador)
+    contador = contador + 1`
+
+const EMPTY_RESULT = {
+  success: true,
+  phase: 'Pronto',
+  output: [],
+  error: null,
+  tokens: [],
+  ast: null,
+  environment: {},
+  steps: 0,
+}
+
+const editorExtensions = [python()]
+
+const supportedFeatures = [
+  'IF',
+  'ELSE',
+  'FOR',
+  'WHILE',
+  'PRINT',
+  'VARIÁVEIS',
+  'OPERADORES LÓGICOS',
+  'OPERADORES MATEMÁTICOS',
+]
+
+const formatVariable = ([name, data]) => `${name}: ${data.type} = ${data.value}`
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [code, setCode] = useState(DEFAULT_CODE)
+  const [result, setResult] = useState(() => runCompiler(DEFAULT_CODE))
+
+  const variables = useMemo(
+    () => Object.entries(result.environment ?? {}),
+    [result.environment],
+  )
+
+  const runCode = () => {
+    setResult(runCompiler(code))
+  }
+
+  const clearOutput = () => {
+    setResult(EMPTY_RESULT)
+  }
+
+  const loadExample = () => {
+    setCode(DEFAULT_CODE)
+    setResult(runCompiler(DEFAULT_CODE))
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main className="app-shell">
+      <header className="topbar">
+        <div className="brand">
+          <span className="brand-mark" aria-hidden="true">
+            <Code2 size={22} strokeWidth={2.2} />
+          </span>
+          <div>
+            <h1>Compilador Python</h1>
+            <p>Interpretador didático feito em JavaScript</p>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+
+        <div className="toolbar" aria-label="Ações do compilador">
+          <button className="button primary" type="button" onClick={runCode}>
+            <Play size={18} aria-hidden="true" />
+            Executar
+          </button>
+          <button className="button" type="button" onClick={clearOutput}>
+            <Trash2 size={18} aria-hidden="true" />
+            Limpar saída
+          </button>
+          <button className="button" type="button" onClick={loadExample}>
+            <RotateCcw size={18} aria-hidden="true" />
+            Exemplo
+          </button>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+      </header>
+
+      <section className="workspace" aria-label="Área de compilação">
+        <section className="tool-panel editor-panel" aria-labelledby="editor-title">
+          <div className="panel-header">
+            <div>
+              <span className="panel-kicker">
+                <Braces size={16} aria-hidden="true" />
+                Código
+              </span>
+              <h2 id="editor-title">Editor</h2>
+            </div>
+            <span className="panel-meta">Python subset</span>
+          </div>
+
+          <div className="editor-frame">
+            <CodeMirror
+              value={code}
+              height="100%"
+              theme="dark"
+              extensions={editorExtensions}
+              basicSetup={{
+                foldGutter: false,
+                highlightActiveLine: true,
+                autocompletion: false,
+              }}
+              onChange={setCode}
+              aria-label="Editor de código Python"
+            />
+          </div>
+        </section>
+
+        <aside className="tool-panel output-panel" aria-labelledby="output-title">
+          <div className="panel-header">
+            <div>
+              <span className="panel-kicker">
+                <Terminal size={16} aria-hidden="true" />
+                Saída
+              </span>
+              <h2 id="output-title">Console</h2>
+            </div>
+
+            <span className={`status-pill ${result.success ? 'success' : 'error'}`}>
+              {result.success ? (
+                <CheckCircle2 size={16} aria-hidden="true" />
+              ) : (
+                <AlertTriangle size={16} aria-hidden="true" />
+              )}
+              {result.success ? result.phase : result.error.phase}
+            </span>
+          </div>
+
+          <div className="console">
+            {result.output.length > 0 ? (
+              result.output.map((line, index) => (
+                <div className="console-line" key={`${line}-${index}`}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <code>{line || ' '}</code>
+                </div>
+              ))
+            ) : (
+              <p className="empty-console">Sem saída no console.</p>
+            )}
+
+            {result.error ? (
+              <div className="error-box">
+                <AlertTriangle size={18} aria-hidden="true" />
+                <div>
+                  <strong>{result.error.phase}</strong>
+                  <span>
+                    Linha {result.error.line}, coluna {result.error.column}
+                  </span>
+                  <code>{result.error.message}</code>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="runtime-grid">
+            <div>
+              <span>Tokens</span>
+              <strong>{result.tokens.length}</strong>
+            </div>
+            <div>
+              <span>Passos</span>
+              <strong>{result.steps}</strong>
+            </div>
+            <div>
+              <span>Variáveis</span>
+              <strong>{variables.length}</strong>
+            </div>
+          </div>
+
+          <div className="memory-panel" aria-label="Memória de variáveis">
+            <div className="memory-title">
+              <BookOpen size={16} aria-hidden="true" />
+              Memória
+            </div>
+            {variables.length > 0 ? (
+              variables.map((variable) => (
+                <code className="memory-row" key={variable[0]}>
+                  {formatVariable(variable)}
+                </code>
+              ))
+            ) : (
+              <span className="memory-empty">Nenhuma variável registrada.</span>
+            )}
+          </div>
+        </aside>
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+      <section className="feature-strip" aria-label="Recursos suportados">
+        {supportedFeatures.map((feature) => (
+          <span key={feature}>{feature}</span>
+        ))}
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 
