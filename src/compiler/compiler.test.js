@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { runCompiler } from './index'
+import { runCompiler, runCompilerAsync } from './index'
 
 describe('compilador didático de Python', () => {
   it('executa print com texto', () => {
@@ -67,6 +67,39 @@ for i in range(1, 4):
 
     expect(result.success).toBe(true)
     expect(result.output).toEqual(['1', '2', '3'])
+  })
+
+  it('executa input com entradas fornecidas', () => {
+    const result = runCompiler(
+      `
+nome = input("Nome: ")
+idade = input("Idade: ")
+if idade >= 18:
+    print("Olá", nome)
+else:
+    print("Acesso negado")
+`,
+      { inputValues: ['Ana', '20'] },
+    )
+
+    expect(result.success).toBe(true)
+    expect(result.output).toEqual(['Nome: Ana', 'Idade: 20', 'Olá Ana'])
+    expect(result.environment.nome).toEqual({ type: 'string', value: 'Ana' })
+    expect(result.environment.idade).toEqual({ type: 'int', value: 20 })
+  })
+
+  it('executa input assíncrono como terminal interativo', async () => {
+    const result = await runCompilerAsync(
+      `
+nota = input("Nota: ")
+print(nota + 1)
+`,
+      { inputProvider: async () => '7' },
+    )
+
+    expect(result.success).toBe(true)
+    expect(result.output).toEqual(['Nota: 7', '8'])
+    expect(result.environment.nota).toEqual({ type: 'int', value: 7 })
   })
 
   it('executa operadores lógicos', () => {

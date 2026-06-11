@@ -55,6 +55,7 @@ O compilador suporta os seguintes recursos básicos:
 - `for` com `range(...)`
 - `while`
 - `print(...)`
+- `input(...)` com interação pelo console
 - variáveis com tipos inferidos: `int`, `double`, `string`, `char` e `boolean`
 - operadores matemáticos: `+`, `-`, `*`, `/`, `%`
 - operadores de comparação: `==`, `!=`, `<`, `<=`, `>`, `>=`
@@ -63,8 +64,8 @@ O compilador suporta os seguintes recursos básicos:
 Exemplo:
 
 ```python
-nome = "Ana"
-idade = 20
+nome = input("Digite o nome: ")
+idade = input("Digite a idade: ")
 media = 8.5
 
 print("Aluno:", nome)
@@ -106,7 +107,6 @@ Este projeto não implementa Python completo. Alguns recursos ainda não existem
 - listas, dicionários e tuplas;
 - importação de bibliotecas;
 - classes;
-- entrada via `input`;
 - escopo local de funções;
 - tratamento de exceções com `try/except`.
 
