@@ -55,11 +55,13 @@ const supportedFeatures = [
   'PRINT',
   'INPUT',
   'VARIÁVEIS',
+  'STRINGS',
+  'BOOLEANOS',
+  'RANGE',
   'OPERADORES LÓGICOS',
   'OPERADORES MATEMÁTICOS',
-  'OPERADORES RELACIONAL'
+  'OPERADORES RELACIONAIS'
 ]
-
 const formatVariable = ([name, data]) => `${name}: ${data.type} = ${data.value}`
 
 function App() {
