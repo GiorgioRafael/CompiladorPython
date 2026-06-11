@@ -57,6 +57,7 @@ const supportedFeatures = [
   'VARIÁVEIS',
   'OPERADORES LÓGICOS',
   'OPERADORES MATEMÁTICOS',
+  'OPERADORES RELACIONAL'
 ]
 
 const formatVariable = ([name, data]) => `${name}: ${data.type} = ${data.value}`
