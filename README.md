@@ -23,19 +23,19 @@ Tecnicamente, este projeto é um interpretador didático: ele não gera código 
 
 ## Como Rodar Localmente
 
-Instale as dependências:
+Instale as dependências
 
 ```bash
 npm install
 ```
 
-Inicie o servidor de desenvolvimento:
+Inicie o servidor de desenvolvimento
 
 ```bash
 npm run dev
 ```
 
-Rode os testes:
+Rode os testes
 
 ```bash
 npm test
