@@ -244,22 +244,28 @@
   padding: 16px;
   background: #0f1724;
   color: #d9e4f2;
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.6;
   overflow: auto;
-  cursor: text;
 }
 
 .console-line {
-  display: block;
-  padding: 2px 0;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 5px 0;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.console-line span {
+  color: #61708b;
+  text-align: right;
+  user-select: none;
 }
 
 .console-line code {
-  display: block;
   color: #e9f2ff;
-  font-family: var(--mono);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -269,39 +275,6 @@
   color: #7f8da6;
   font-family: var(--mono);
   font-size: 14px;
-}
-
-.console-input-line {
-  display: flex;
-  min-width: 0;
-  align-items: baseline;
-  gap: 6px;
-  padding: 2px 0;
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.console-prompt {
-  flex: 0 1 auto;
-  color: #8fd6ff;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.console-input-line input {
-  width: 100%;
-  min-width: 8ch;
-  flex: 1 1 8ch;
-  padding: 0;
-  border: 0;
-  color: #edf6ff;
-  caret-color: #8fd6ff;
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.6;
-  outline: none;
 }
 
 .error-box {
