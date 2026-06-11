@@ -1,0 +1,135 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{listings}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{RELATÓRIO FINAL -- COMPILADOR PYTHON DIDÁTICO}}
+\author{
+Marcelo Gabriel Euclides Da Silva -- Matrícula 01605103 \\
+Giorgio Rafael Ataide Guimarães -- Matrícula 01620989 \\
+Luiz Gustavo Freire Barbosa -- Matrícula 01864307 \\
+Matheus Wendell de Paula Souza -- Matrícula 01602509 \\
+Guilherme Oliveira Ribeiro -- Matrícula: 01606196 \\
+Pedro Henrique Alves Lessa -- 01638620 \\
+Matheus Venâncio Da Silva -- 01628436 \\
+Yuri Mascarenhas -- 01327348 \\
+Felipe de Lima Passos -- 01647492 \\
+Maria Eduarda Cardoso Ferreira -- 01724547
+}
+\date{Maceió -- AL \\ 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Disciplina:} Compiladores \\[0.2cm]
+\textbf{Curso:} Ciência da Computação
+\end{center}
+
+\newpage
+
+\section{Visão Geral do Projeto}
+
+\subsection{Problema a ser resolvido}
+
+O estudo de compiladores é um dos temas mais importantes da Ciência da Computação, pois permite compreender como linguagens de programação são interpretadas e executadas pelos computadores. Entretanto, muitos estudantes encontram dificuldades para visualizar na prática as etapas envolvidas nesse processo, uma vez que grande parte do conteúdo é apresentada de forma teórica.
+
+Diante desse cenário, foi desenvolvido um compilador didático inspirado na linguagem Python, permitindo que o usuário escreva código-fonte, realize sua análise e visualize os resultados da execução em uma interface gráfica intuitiva.
+
+\subsection{Público-alvo}
+
+O sistema foi desenvolvido para estudantes da disciplina de Compiladores, professores da área de Linguagens Formais e Compiladores, além de desenvolvedores iniciantes interessados em compreender o funcionamento interno de uma linguagem de programação.
+
+\subsection{Proposta de Valor}
+
+A proposta do projeto consiste em fornecer uma ferramenta educacional capaz de demonstrar, de forma prática, as principais etapas de um compilador moderno. O sistema realiza análise léxica, análise sintática e interpretação de código, permitindo ao usuário visualizar erros, executar programas e acompanhar o estado das variáveis durante a execução.
+
+\section{Requisitos do Sistema}
+
+\subsection{Requisitos Funcionais (RF)}
+
+\begin{itemize}
+    \item RF01: Permitir ao usuário escrever código-fonte em um editor integrado.
+    \item RF02: Realizar análise léxica do código inserido.
+    \item RF03: Realizar análise sintática utilizando uma gramática inspirada na linguagem Python.
+    \item RF04: Executar programas válidos por meio de um interpretador interno.
+    \item RF05: Exibir mensagens de erro contendo linha e coluna da ocorrência.
+    \item RF06: Permitir a utilização de estruturas condicionais.
+    \item RF07: Permitir a utilização de estruturas de repetição.
+    \item RF08: Exibir as variáveis armazenadas em memória após a execução.
+\end{itemize}
+
+\subsection{Requisitos Não Funcionais (RNF)}
+
+\begin{itemize}
+    \item RNF01: O sistema deve ser desenvolvido utilizando JavaScript.
+    \item RNF02: A interface gráfica deve ser desenvolvida utilizando React.
+    \item RNF03: A aplicação deve possuir interface responsiva.
+    \item RNF04: O sistema deve impedir execuções infinitas por meio de controle de passos.
+    \item RNF05: A aplicação deve fornecer feedback visual sobre o resultado da compilação.
+\end{itemize}
+
+\section{Regras de Negócio}
+
+\begin{itemize}
+    \item Variáveis devem existir antes de serem utilizadas.
+    \item Operações matemáticas devem ocorrer apenas entre valores numéricos compatíveis.
+    \item Concatenação de textos deve ocorrer apenas entre valores textuais.
+    \item O comando \texttt{range()} deve receber apenas valores inteiros.
+    \item Loops infinitos devem ser interrompidos automaticamente quando o limite de execução for atingido.
+    \item Comparações devem ocorrer apenas entre tipos compatíveis.
+\end{itemize}
+
+\section{Arquitetura do Sistema}
+
+O sistema foi desenvolvido seguindo uma arquitetura modular, composta pelas etapas de análise léxica, análise sintática e interpretação de código.
+
+\subsection{Fluxo de execução}
+
+A interface desenvolvida em React é responsável pela entrada do código-fonte e pela exibição dos resultados. O módulo \texttt{Lexer} realiza a análise léxica, o \texttt{Parser} constrói a árvore sintática e o \texttt{Interpreter} executa as instruções geradas.
+
+\section{Análise Léxica}
+
+A análise léxica é a primeira etapa do processo de compilação. Seu objetivo é converter o código-fonte em uma sequência de tokens compreensíveis pelo compilador.
+
+Entre os tokens suportados estão:
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Código} & \textbf{Token} \\
+\hline
+if & IF \\
+else & ELSE \\
+while & WHILE \\
+print & PRINT \\
+true & BOOLEAN \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Exemplo}
+
+Código-fonte:
+
+\begin{lstlisting}
+x = 10
+\end{lstlisting}
+
+Tokens gerados:
+
+\begin{lstlisting}
+IDENTIFIER EQUAL NUMBER
+\end{lstlisting}
+
+Além disso, o analisador léxico reconhece operadores matemáticos, operadores lógicos, operadores relacionais, números inteiros, números decimais, strings, caracteres e estruturas de indentação inspiradas na linguagem Python.
+
+\end{document}
