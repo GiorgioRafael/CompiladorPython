@@ -254,7 +254,37 @@ class Parser {
       }
     }
 
-    return this.parsePrimary()
+    return this.parseCall()
+  }
+
+  parseCall() {
+    let expression = this.parsePrimary()
+
+    while (this.match('LEFT_PAREN')) {
+      const paren = this.previous()
+      const args = []
+
+      if (!this.check('RIGHT_PAREN')) {
+        do {
+          args.push(this.parseExpression())
+        } while (this.match('COMMA'))
+      }
+
+      this.consume('RIGHT_PAREN', 'Use ")" para finalizar a chamada da função.')
+
+      if (expression.type !== 'Identifier') {
+        this.raise(paren, 'Somente funções nomeadas podem ser chamadas.')
+      }
+
+      expression = {
+        type: 'CallExpression',
+        callee: expression.name,
+        args,
+        loc: expression.loc,
+      }
+    }
+
+    return expression
   }
 
   parsePrimary() {
